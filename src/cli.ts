@@ -39,6 +39,8 @@ Passphrase Options:
   --no-number           Don't include a number
   --lang <code >        Language: 'en' (default) or 'ko' (Korean)
   --qwerty              Convert Korean characters to QWERTY keyboard input
+  --transform <type>    Case transformation: 'lowercase', 'uppercase', 'titlecase'
+  --leet                Apply 1337 substitutions (e.g. 'e' -> '3')
 
 Examples:
   passphrase-generator password -l 20 --no-special
@@ -119,6 +121,14 @@ function parseArgs(args: string[]) {
             }
         } else if (arg === '--qwerty') {
             options.qwertyConvert = true;
+        } else if (arg === '--transform') {
+            const next = args[i + 1];
+            if (next && ['lowercase', 'uppercase', 'titlecase'].includes(next)) {
+                options.transform = next;
+                i++;
+            }
+        } else if (arg === '--leet') {
+            options.leet = true;
         }
         // Input for strength (or loose args)
         else if (!arg.startsWith('-')) {
