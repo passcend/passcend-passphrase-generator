@@ -1,4 +1,4 @@
-# Passcend 패스프레이즈 생성기 (Passcend Passphrase Generator)
+# Passcend Passgen
 
 Node.js 및 브라우저를 위한 안전하고 유연하며 종속성이 없는 비밀번호 및 패스프레이즈 생성기입니다. 한국어 패스프레이즈 생성과 QWERTY 변환, Leet Speak 등 다양한 기능을 지원합니다.
 
@@ -22,7 +22,7 @@ Node.js 및 브라우저를 위한 안전하고 유연하며 종속성이 없는
 ## 설치 (Installation)
 
 ```bash
-npm install @passcend/passphrase-generator
+npm install @passcend/passgen
 ```
 
 ## CLI 사용법 (CLI Usage)
@@ -31,11 +31,11 @@ npm install @passcend/passphrase-generator
 
 ```bash
 # npx로 실행 (설치 없이)
-npx @passcend/passphrase-generator [command] [options]
+npx @passcend/passgen [command] [options]
 
 # 또는 전역 설치 후 실행
-npm install -g @passcend/passphrase-generator
-passphrase-generator [command] [options]
+npm install -g @passcend/passgen
+passgen [command] [options]
 ```
 
 ### 명령어 (Commands)
@@ -84,29 +84,29 @@ passphrase-generator [command] [options]
 
 ```bash
 # 기본 비밀번호 생성
-passphrase-generator password
+passgen password
 
 # 20자 길이의 비밀번호 생성, 특수문자 제외
-passphrase-generator password -l 20 --no-special
+passgen password -l 20 --no-special
 
 # 한국어 패스프레이즈 생성
-passphrase-generator passphrase --lang ko
+passgen passphrase --lang ko
 # 출력 예: 강낭콩-아버지-소나무-바다
 
 # 한국어 패스프레이즈를 QWERTY 영문으로 변환
-passphrase-generator passphrase --lang ko --qwerty
+passgen passphrase --lang ko --qwerty
 # 출력 예: rkdskdzhd-dkqjwl-thskan-qkek
 
 # Leet Speak 적용 및 대문자 변환
-passphrase-generator passphrase --leet --transform uppercase
+passgen passphrase --leet --transform uppercase
 # 출력 예: P455W0RD-C0RR3C7-H0R53-B4773RY
 
 # PIN 생성 (기본 4자리, 보안 규칙 적용)
-passphrase-generator pin
+passgen pin
 # 출력 예: 5028
 
 # 6자리 PIN 생성
-passphrase-generator pin -l 6
+passgen pin -l 6
 ```
 
 ## 라이브러리 사용법 (Library Usage)
@@ -114,7 +114,7 @@ passphrase-generator pin -l 6
 ### 패스프레이즈 생성 (Generate a Passphrase)
 
 ```typescript
-import { PasswordGenerator } from '@passcend/passphrase-generator';
+import { PasswordGenerator } from '@passcend/passgen';
 
 // 기본 패스프레이즈 생성 (4단어, 대문자화, 숫자 포함)
 const passphrase = PasswordGenerator.generatePassphrase();
@@ -135,7 +135,7 @@ console.log(customPassphrase);
 ### 비밀번호 생성 (Generate a Password)
 
 ```typescript
-import { PasswordGenerator } from '@passcend/passphrase-generator';
+import { PasswordGenerator } from '@passcend/passgen';
 
 const password = PasswordGenerator.generatePassword({
     length: 20,
@@ -150,7 +150,7 @@ console.log(password);
 ### PIN 생성 (Generate a PIN)
 
 ```typescript
-import { PasswordGenerator } from '@passcend/passphrase-generator';
+import { PasswordGenerator } from '@passcend/passgen';
 
 // 기본 PIN 생성 (4자리, 연속/반복 불가)
 const pin = PasswordGenerator.generatePin();
@@ -168,7 +168,7 @@ console.log(customPin);
 ### 비밀번호 강도 확인 (Check Password Strength)
 
 ```typescript
-import { PasswordGenerator } from '@passcend/passphrase-generator';
+import { PasswordGenerator } from '@passcend/passgen';
 
 const strength = PasswordGenerator.calculateStrength('weakpassword');
 console.log(strength);

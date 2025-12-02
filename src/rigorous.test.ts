@@ -171,7 +171,7 @@ describe('CLI Integration Test', () => {
     it('should print help', async () => {
         const output = await runCli('--help');
         expect(output).toContain('Usage:');
-        expect(output).toContain('passphrase-generator');
+        expect(output).toContain('passgen');
     });
 
     it('should generate a password via CLI', async () => {

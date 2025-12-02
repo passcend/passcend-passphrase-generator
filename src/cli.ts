@@ -13,10 +13,10 @@ const args = process.argv.slice(2);
 
 function printHelp() {
     console.log(`
-Passcend Passphrase Generator - CLI
+Passcend Passgen - CLI
 
 Usage:
-  passphrase-generator [command] [options]
+  passgen [command] [options]
 
 Commands:
   password (default)    Generate a random password
@@ -51,11 +51,11 @@ PIN Options:
   --allow-repeat        Allow repeated patterns (e.g. 1111)
 
 Examples:
-  passphrase-generator password -l 20 --no-special
-  passphrase-generator passphrase -w 5 --sep "_"
-  passphrase-generator passphrase --lang ko
-  passphrase-generator pin -l 6
-  passphrase-generator strength "correct-horse-battery-staple"
+  passgen password -l 20 --no-special
+  passgen passphrase -w 5 --sep "_"
+  passgen passphrase --lang ko
+  passgen pin -l 6
+  passgen strength "correct-horse-battery-staple"
 `);
 }
 
@@ -175,7 +175,7 @@ function run() {
             case 'strength':
                 if (!input) {
                     console.error('Error: Please provide a password to check.');
-                    console.log('Usage: passphrase-generator strength <password>');
+                    console.log('Usage: passgen strength <password>');
                     process.exit(1);
                 }
                 const result = calculateStrength(input);
