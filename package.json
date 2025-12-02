@@ -1,0 +1,30 @@
+{
+    "name": "passcend-passphrase-generator",
+    "version": "1.0.0",
+    "description": "A secure, flexible, and zero-dependency password and passphrase generator for Node.js and the browser.",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "jest",
+        "prepublishOnly": "npm run build"
+    },
+    "keywords": [
+        "password",
+        "passphrase",
+        "generator",
+        "security",
+        "crypto",
+        "eff",
+        "wordlist"
+    ],
+    "author": "Passcend",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/jest": "^29.5.12",
+        "@types/node": "^20.11.24",
+        "jest": "^29.7.0",
+        "ts-jest": "^29.1.2",
+        "typescript": "^5.3.3"
+    }
+}
