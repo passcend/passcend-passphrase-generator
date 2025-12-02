@@ -14,7 +14,7 @@ A secure, flexible, and zero-dependency password and passphrase generator for No
 ## Installation
 
 ```bash
-npm install passcend-passphrase-generator
+npm install @passcend/passphrase-generator
 ```
 
 ## Usage
@@ -22,7 +22,7 @@ npm install passcend-passphrase-generator
 ### Generate a Password
 
 ```typescript
-import { PasswordGenerator } from 'passcend-passphrase-generator';
+import { PasswordGenerator } from '@passcend/passphrase-generator';
 
 // Generate a default password (16 chars, all types)
 const password = PasswordGenerator.generatePassword();
@@ -43,7 +43,7 @@ console.log(customPassword);
 ### Generate a Passphrase
 
 ```typescript
-import { PasswordGenerator } from 'passcend-passphrase-generator';
+import { PasswordGenerator } from '@passcend/passphrase-generator';
 
 // Generate a default passphrase (4 words, capitalized, with number)
 const passphrase = PasswordGenerator.generatePassphrase();
@@ -62,7 +62,7 @@ console.log(customPassphrase); // e.g., "correct horse battery staple blue sky"
 ### Check Password Strength
 
 ```typescript
-import { PasswordGenerator } from 'passcend-passphrase-generator';
+import { PasswordGenerator } from '@passcend/passphrase-generator';
 
 const strength = PasswordGenerator.calculateStrength('weakpassword');
 console.log(strength);

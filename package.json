@@ -1,5 +1,5 @@
 {
-    "name": "passcend-passphrase-generator",
+    "name": "@passcend/passphrase-generator",
     "version": "1.0.0",
     "description": "A secure, flexible, and zero-dependency password and passphrase generator for Node.js and the browser.",
     "main": "dist/index.js",
@@ -8,6 +8,9 @@
         "build": "tsc",
         "test": "jest",
         "prepublishOnly": "npm run build"
+    },
+    "publishConfig": {
+        "access": "public"
     },
     "keywords": [
         "password",
