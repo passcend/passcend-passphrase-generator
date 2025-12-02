@@ -4,6 +4,9 @@
     "description": "A secure, flexible, and zero-dependency password and passphrase generator for Node.js and the browser.",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "bin": {
+        "passphrase-generator": "./dist/cli.js"
+    },
     "scripts": {
         "build": "tsc",
         "test": "jest",
