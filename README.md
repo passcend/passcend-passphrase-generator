@@ -1,72 +1,72 @@
-# Passcend Passphrase Generator
+# Passcend 패스프레이즈 생성기 (Passcend Passphrase Generator)
 
-A secure, flexible, and zero-dependency password and passphrase generator for Node.js and the browser.
+Node.js 및 브라우저를 위한 안전하고 유연하며 종속성이 없는 비밀번호 및 패스프레이즈 생성기입니다.
 
-## Features
+## 특징 (Features)
 
-*   **Secure**: Uses `crypto.getRandomValues` (Browser) or `crypto.randomBytes` (Node.js) for cryptographically secure random number generation.
-*   **Flexible**: Generate random passwords with customizable character sets (uppercase, lowercase, numbers, special characters).
-*   **Passphrases**: Generate memorable passphrases using the EFF Large Wordlist (7776 words).
-*   **Strength Meter**: Built-in password strength estimation (0-4 score).
-*   **Zero Dependencies**: No external runtime dependencies.
-*   **TypeScript Support**: Written in TypeScript with full type definitions.
+*   **보안 (Secure)**: `crypto.getRandomValues` (브라우저) 또는 `crypto.randomBytes` (Node.js)를 사용하여 암호학적으로 안전한 난수를 생성합니다.
+*   **유연성 (Flexible)**: 문자 세트(대문자, 소문자, 숫자, 특수 문자)를 사용자 정의하여 임의의 비밀번호를 생성할 수 있습니다.
+*   **패스프레이즈 (Passphrases)**: EFF 대용량 단어 목록 (7776개 단어)을 사용하여 기억하기 쉬운 패스프레이즈를 생성합니다.
+*   **강도 측정기 (Strength Meter)**: 내장된 비밀번호 강도 추정 기능 (0-4점).
+*   **무의존성 (Zero Dependencies)**: 외부 런타임 종속성이 없습니다.
+*   **TypeScript 지원 (TypeScript Support)**: TypeScript로 작성되었으며 전체 타입 정의를 포함합니다.
 
-## Installation
+## 설치 (Installation)
 
 ```bash
 npm install @passcend/passphrase-generator
 ```
 
-## Usage
+## 사용법 (Usage)
 
-### Generate a Password
+### 비밀번호 생성 (Generate a Password)
 
 ```typescript
 import { PasswordGenerator } from '@passcend/passphrase-generator';
 
-// Generate a default password (16 chars, all types)
+// 기본 비밀번호 생성 (16자, 모든 유형 포함)
 const password = PasswordGenerator.generatePassword();
-console.log(password); // e.g., "x8!kL9#mP2$qR5@z"
+console.log(password); // 예: "x8!kL9#mP2$qR5@z"
 
-// Customize options
+// 옵션 사용자 정의
 const customPassword = PasswordGenerator.generatePassword({
     length: 20,
     uppercase: true,
     lowercase: true,
     numbers: true,
     special: false,
-    ambiguous: false // Exclude I, l, 1, 0, O
+    ambiguous: false // I, l, 1, 0, O 제외
 });
 console.log(customPassword);
 ```
 
-### Generate a Passphrase
+### 패스프레이즈 생성 (Generate a Passphrase)
 
 ```typescript
 import { PasswordGenerator } from '@passcend/passphrase-generator';
 
-// Generate a default passphrase (4 words, capitalized, with number)
+// 기본 패스프레이즈 생성 (4단어, 대문자화, 숫자 포함)
 const passphrase = PasswordGenerator.generatePassphrase();
-console.log(passphrase); // e.g., "Correct-Horse-Battery-Staple5"
+console.log(passphrase); // 예: "Correct-Horse-Battery-Staple5"
 
-// Customize options
+// 옵션 사용자 정의
 const customPassphrase = PasswordGenerator.generatePassphrase({
     numWords: 6,
     wordSeparator: ' ',
     capitalize: false,
     includeNumber: false
 });
-console.log(customPassphrase); // e.g., "correct horse battery staple blue sky"
+console.log(customPassphrase); // 예: "correct horse battery staple blue sky"
 ```
 
-### Check Password Strength
+### 비밀번호 강도 확인 (Check Password Strength)
 
 ```typescript
 import { PasswordGenerator } from '@passcend/passphrase-generator';
 
 const strength = PasswordGenerator.calculateStrength('weakpassword');
 console.log(strength);
-// Output:
+// 출력:
 // {
 //   score: 1,
 //   label: 'Weak',
@@ -74,46 +74,46 @@ console.log(strength);
 // }
 ```
 
-## API Reference
+## API 참조 (API Reference)
 
 ### `PasswordGenerator.generatePassword(options?)`
 
-Generates a random password string.
+임의의 비밀번호 문자열을 생성합니다.
 
-**Options:**
+**옵션 (Options):**
 
-*   `length` (number): Length of the password (default: 16).
-*   `uppercase` (boolean): Include uppercase letters (default: true).
-*   `lowercase` (boolean): Include lowercase letters (default: true).
-*   `numbers` (boolean): Include numbers (default: true).
-*   `special` (boolean): Include special characters (default: true).
-*   `ambiguous` (boolean): Include ambiguous characters (default: false).
-*   `minUppercase` (number): Minimum number of uppercase letters (default: 1).
-*   `minLowercase` (number): Minimum number of lowercase letters (default: 1).
-*   `minNumbers` (number): Minimum number of numbers (default: 1).
-*   `minSpecial` (number): Minimum number of special characters (default: 1).
+*   `length` (number): 비밀번호 길이 (기본값: 16).
+*   `uppercase` (boolean): 대문자 포함 여부 (기본값: true).
+*   `lowercase` (boolean): 소문자 포함 여부 (기본값: true).
+*   `numbers` (boolean): 숫자 포함 여부 (기본값: true).
+*   `special` (boolean): 특수 문자 포함 여부 (기본값: true).
+*   `ambiguous` (boolean): 모호한 문자 포함 여부 (기본값: false).
+*   `minUppercase` (number): 최소 대문자 개수 (기본값: 1).
+*   `minLowercase` (number): 최소 소문자 개수 (기본값: 1).
+*   `minNumbers` (number): 최소 숫자 개수 (기본값: 1).
+*   `minSpecial` (number): 최소 특수 문자 개수 (기본값: 1).
 
 ### `PasswordGenerator.generatePassphrase(options?)`
 
-Generates a random passphrase string using the EFF Large Wordlist.
+EFF 대용량 단어 목록을 사용하여 임의의 패스프레이즈 문자열을 생성합니다.
 
-**Options:**
+**옵션 (Options):**
 
-*   `numWords` (number): Number of words (default: 4).
-*   `wordSeparator` (string): Separator between words (default: '-').
-*   `capitalize` (boolean): Capitalize the first letter of each word (default: true).
-*   `includeNumber` (boolean): Append a random number to one of the words (default: true).
+*   `numWords` (number): 단어 수 (기본값: 4).
+*   `wordSeparator` (string): 단어 사이의 구분자 (기본값: '-').
+*   `capitalize` (boolean): 각 단어의 첫 글자 대문자화 여부 (기본값: true).
+*   `includeNumber` (boolean): 단어 중 하나에 임의의 숫자 추가 여부 (기본값: true).
 
 ### `PasswordGenerator.calculateStrength(password)`
 
-Calculates the estimated strength of a password.
+비밀번호의 추정 강도를 계산합니다.
 
-**Returns:**
+**반환값 (Returns):**
 
-*   `score` (number): 0 (Very Weak) to 4 (Very Strong).
-*   `label` (string): Human-readable strength label.
-*   `color` (string): Suggested UI color (red, orange, yellow, lime, green).
+*   `score` (number): 0 (매우 약함) ~ 4 (매우 강함).
+*   `label` (string): 사람이 읽을 수 있는 강도 라벨.
+*   `color` (string): 추천 UI 색상 (red, orange, yellow, lime, green).
 
-## License
+## 라이선스 (License)
 
 MIT
