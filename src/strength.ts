@@ -1,8 +1,11 @@
+import { checkKeyboardPatterns } from './keyboard';
+
 export interface PasswordStrength {
     score: number;
     label: string;
     color: string;
     entropy?: number;
+    warnings?: string[];
 }
 
 /**
@@ -32,12 +35,13 @@ export function calculateEntropy(password: string): number {
  */
 export function calculateStrength(password: string): PasswordStrength {
     if (!password) {
-        return { score: 0, label: 'Very Weak', color: 'red', entropy: 0 };
+        return { score: 0, label: 'Very Weak', color: 'red', entropy: 0, warnings: [] };
     }
 
     let score = 0;
     const length = password.length;
     const entropy = calculateEntropy(password);
+    const warnings: string[] = [];
 
     // Length scoring
     if (length >= 8) score++;
@@ -57,10 +61,29 @@ export function calculateStrength(password: string): PasswordStrength {
     if (varietyCount >= 4) score++;
 
     // Penalize common patterns
-    if (/^[a-zA-Z]+$/.test(password)) score -= 1;
-    if (/^[0-9]+$/.test(password)) score -= 2;
-    if (/(.)\1{2,}/.test(password)) score -= 1; // Repeating characters
-    if (/^(123|abc|qwe|password|admin)/i.test(password)) score -= 2;
+    if (/^[a-zA-Z]+$/.test(password)) {
+        score -= 1;
+        warnings.push('Letters only');
+    }
+    if (/^[0-9]+$/.test(password)) {
+        score -= 2;
+        warnings.push('Numbers only');
+    }
+    if (/(.)\1{2,}/.test(password)) {
+        score -= 1; // Repeating characters
+        warnings.push('Repeated characters');
+    }
+    if (/^(123|abc|qwe|password|admin)/i.test(password)) {
+        score -= 2;
+        warnings.push('Common pattern detected');
+    }
+
+    // Keyboard patterns
+    const keyboardPatterns = checkKeyboardPatterns(password);
+    if (keyboardPatterns.length > 0) {
+        score -= 2;
+        warnings.push(...keyboardPatterns);
+    }
 
     // Use entropy to boost or penalize
     if (entropy > 120) score += 2;
@@ -77,6 +100,7 @@ export function calculateStrength(password: string): PasswordStrength {
         score,
         label: labels[score],
         color: colors[score],
-        entropy
+        entropy,
+        warnings
     };
 }

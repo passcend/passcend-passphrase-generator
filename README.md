@@ -15,6 +15,7 @@ Node.js 및 브라우저를 위한 안전하고 유연하며 종속성이 없는
     *   Leet Speak (1337) 지원
     *   한글 -> 영문 QWERTY 키보드 입력 변환
 *   **강도 측정기 (Strength Meter)**: 내장된 비밀번호 강도 추정 기능 (0-4점).
+    *   **키보드 패턴 감지**: 'qwerty', 'asdf' 등 키보드 상에서 인접한 키의 패턴을 감지하여 경고를 제공합니다.
 *   **무의존성 (Zero Dependencies)**: 외부 런타임 종속성이 없습니다.
 *   **TypeScript 지원 (TypeScript Support)**: TypeScript로 작성되었으며 전체 타입 정의를 포함합니다.
 *   **CLI 도구**: 커맨드 라인에서 바로 비밀번호와 패스프레이즈를 생성할 수 있습니다.
@@ -170,9 +171,21 @@ console.log(customPin);
 ```typescript
 import { PasswordGenerator } from '@passcend/passgen';
 
-const strength = PasswordGenerator.calculateStrength('weakpassword');
+const strength = PasswordGenerator.calculateStrength('qwerty12345');
 console.log(strength);
-// { score: 1, label: 'Weak', color: 'orange', entropy: ... }
+/*
+{
+  score: 0,
+  label: 'Very Weak',
+  color: 'red',
+  entropy: ...,
+  warnings: [
+    'Numbers only',
+    'Common pattern detected',
+    "Keyboard pattern detected (e.g. adjacent keys like 'qwerty' or 'asdf')"
+  ]
+}
+*/
 ```
 
 ## API 참조 (API Reference)
