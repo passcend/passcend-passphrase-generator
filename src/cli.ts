@@ -37,10 +37,14 @@ Passphrase Options:
   --sep, -s <char>      Word separator (default: "${defaultPassphraseOptions.wordSeparator}")
   --no-caps             Don't capitalize words
   --no-number           Don't include a number
+  --lang <code >        Language: 'en' (default) or 'ko' (Korean)
+  --qwerty              Convert Korean characters to QWERTY keyboard input
 
 Examples:
   passphrase-generator password -l 20 --no-special
   passphrase-generator passphrase -w 5 --sep "_"
+  passphrase-generator passphrase --lang ko
+  passphrase-generator passphrase --lang ko --qwerty
   passphrase-generator strength "correct-horse-battery-staple"
 `);
 }
@@ -107,6 +111,14 @@ function parseArgs(args: string[]) {
             options.capitalize = false;
         } else if (arg === '--no-number') {
             options.includeNumber = false;
+        } else if (arg === '--lang') {
+            const next = args[i + 1];
+            if (next) {
+                options.language = next;
+                i++;
+            }
+        } else if (arg === '--qwerty') {
+            options.qwertyConvert = true;
         }
         // Input for strength (or loose args)
         else if (!arg.startsWith('-')) {
