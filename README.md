@@ -188,6 +188,29 @@ console.log(strength);
 */
 ```
 
+### AES-GCM 암호화 (AES-GCM Encryption)
+
+문자열을 AES-GCM 알고리즘으로 암호화하고 복호화할 수 있습니다. 키 유도를 위해 PBKDF2(SHA-256, 100,000회 반복)를 사용하며, 암호화된 데이터는 `Salt(16) + IV(12) + Ciphertext` 형식의 Base64 문자열로 반환됩니다.
+
+```typescript
+import { encrypt, decrypt } from '@passcend/passgen';
+
+async function runEncryption() {
+  const secret = 'my-secret-password';
+  const text = 'Hello, World!';
+
+  // 암호화 (Encrypt)
+  const encrypted = await encrypt(text, secret);
+  console.log('Encrypted:', encrypted);
+
+  // 복호화 (Decrypt)
+  const decrypted = await decrypt(encrypted, secret);
+  console.log('Decrypted:', decrypted);
+}
+
+runEncryption();
+```
+
 ## API 참조 (API Reference)
 
 ### `PasswordGenerator.generatePassphrase(options?)`
