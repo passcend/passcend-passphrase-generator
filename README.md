@@ -16,9 +16,10 @@ Node.js 및 브라우저를 위한 안전하고 유연하며 종속성이 없는
     *   한글 -> 영문 QWERTY 키보드 입력 변환
 *   **강도 측정기 (Strength Meter)**: 내장된 비밀번호 강도 추정 기능 (0-4점).
     *   **키보드 패턴 감지**: 'qwerty', 'asdf' 등 키보드 상에서 인접한 키의 패턴을 감지하여 경고를 제공합니다.
+*   **AES-GCM 암호화**: PBKDF2 키 유도(기본 600,000회 반복)를 사용하는 안전한 텍스트 암호화 및 복호화 기능을 제공합니다.
 *   **무의존성 (Zero Dependencies)**: 외부 런타임 종속성이 없습니다.
 *   **TypeScript 지원 (TypeScript Support)**: TypeScript로 작성되었으며 전체 타입 정의를 포함합니다.
-*   **CLI 도구**: 커맨드 라인에서 바로 비밀번호와 패스프레이즈를 생성할 수 있습니다.
+*   **CLI 도구**: 커맨드 라인에서 바로 비밀번호 생성 및 암호화 작업을 수행할 수 있습니다.
 
 ## 설치 (Installation)
 
@@ -45,9 +46,20 @@ passgen [command] [options]
 *   `passphrase`: 기억하기 쉬운 패스프레이즈 생성
 *   `pin`: 숫자 PIN 생성
 *   `strength <password>`: 비밀번호 강도 확인
+*   `encrypt <text>`: 텍스트 암호화
+*   `decrypt <text>`: 텍스트 복호화
 *   `help`: 도움말 표시
 
 ### 옵션 (Options)
+
+#### 암호화/복호화 옵션 (Encryption/Decryption Options)
+
+| 옵션 | 설명 | 기본값 |
+| --- | --- | --- |
+| `--secret <string>` | 암호화/복호화에 사용할 비밀 키 (필수) | - |
+| `--iterations <n>` | PBKDF2 반복 횟수 | 600,000 |
+| `--salt-len <n>` | Salt 길이 (bytes) | 16 |
+| `--iv-len <n>` | IV 길이 (bytes) | 12 |
 
 #### 패스프레이즈 옵션 (Passphrase Options)
 
@@ -108,6 +120,16 @@ passgen pin
 
 # 6자리 PIN 생성
 passgen pin -l 6
+
+# 텍스트 암호화 (비밀키 사용)
+passgen encrypt "Hello World" --secret "my-secret-key"
+
+# 텍스트 복호화 (동일한 비밀키 사용)
+passgen decrypt "Base64String..." --secret "my-secret-key"
+
+# 반복 횟수를 지정하여 암호화/복호화
+passgen encrypt "Secure Data" --secret "key" --iterations 1000000
+passgen decrypt "..." --secret "key" --iterations 1000000
 ```
 
 ## 라이브러리 사용법 (Library Usage)
@@ -190,7 +212,7 @@ console.log(strength);
 
 ### AES-GCM 암호화 (AES-GCM Encryption)
 
-문자열을 AES-GCM 알고리즘으로 암호화하고 복호화할 수 있습니다. 키 유도를 위해 PBKDF2(SHA-256, 100,000회 반복)를 사용하며, 암호화된 데이터는 `Salt(16) + IV(12) + Ciphertext` 형식의 Base64 문자열로 반환됩니다.
+문자열을 AES-GCM 알고리즘으로 암호화하고 복호화할 수 있습니다. 키 유도를 위해 **PBKDF2(SHA-256, 600,000회 반복)**를 기본값으로 사용하며, 암호화된 데이터는 `Salt(16) + IV(12) + Ciphertext` 형식의 Base64 문자열로 반환됩니다. 다양한 옵션을 통해 보안 매개변수를 조정할 수 있습니다.
 
 ```typescript
 import { encrypt, decrypt } from '@passcend/passgen';
@@ -199,13 +221,27 @@ async function runEncryption() {
   const secret = 'my-secret-password';
   const text = 'Hello, World!';
 
-  // 암호화 (Encrypt)
+  // 기본 암호화 (600,000 iterations)
   const encrypted = await encrypt(text, secret);
   console.log('Encrypted:', encrypted);
+
+  // 사용자 정의 옵션 사용
+  const customEncrypted = await encrypt(text, secret, {
+      iterations: 1000000, // 더 높은 보안을 위해 반복 횟수 증가
+      saltLength: 32,      // Salt 길이 변경
+      ivLength: 16         // IV 길이 변경
+  });
 
   // 복호화 (Decrypt)
   const decrypted = await decrypt(encrypted, secret);
   console.log('Decrypted:', decrypted);
+
+  // 사용자 정의 옵션으로 복호화 (암호화 시 사용한 옵션과 일치해야 함)
+  const customDecrypted = await decrypt(customEncrypted, secret, {
+      iterations: 1000000,
+      saltLength: 32,
+      ivLength: 16
+  });
 }
 
 runEncryption();

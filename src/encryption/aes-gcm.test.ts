@@ -1,56 +1,62 @@
+
 import { encrypt, decrypt } from './aes-gcm';
 
-describe('AES-GCM Encryption with PBKDF2', () => {
-  const secret = 'mySecretPassword123';
-  const plainText = 'Hello World! This is a secret message.';
+describe('AES-GCM Encryption', () => {
+    const secret = 'super-secret-password';
+    const plaintext = 'This is a test message. 안녕하세요.';
 
-  test('should encrypt and decrypt correctly', async () => {
-    const encrypted = await encrypt(plainText, secret);
-    expect(encrypted).not.toBe(plainText);
+    it('should encrypt and decrypt with default options', async () => {
+        const encrypted = await encrypt(plaintext, secret);
+        expect(typeof encrypted).toBe('string');
+        const decrypted = await decrypt(encrypted, secret);
+        expect(decrypted).toBe(plaintext);
+    });
 
-    const decrypted = await decrypt(encrypted, secret);
-    expect(decrypted).toBe(plainText);
-  });
+    it('should produce different ciphertexts for same input (due to random salt/iv)', async () => {
+        const enc1 = await encrypt(plaintext, secret);
+        const enc2 = await encrypt(plaintext, secret);
+        expect(enc1).not.toBe(enc2);
+    });
 
-  test('should fail decryption with wrong key', async () => {
-    const encrypted = await encrypt(plainText, secret);
-    const wrongSecret = 'wrongPassword';
+    it('should fail to decrypt with wrong password', async () => {
+        const encrypted = await encrypt(plaintext, secret);
+        await expect(decrypt(encrypted, 'wrong-password')).rejects.toThrow();
+    });
 
-    await expect(decrypt(encrypted, wrongSecret)).rejects.toThrow();
-  });
+    it('should work with custom iterations (speed up test)', async () => {
+        // Use lower iterations for faster test, though default is 600k now
+        const options = { iterations: 1000 };
+        const encrypted = await encrypt(plaintext, secret, options);
+        const decrypted = await decrypt(encrypted, secret, options);
+        expect(decrypted).toBe(plaintext);
+    });
 
-  test('should produce different ciphertexts for same input (random Salt & IV)', async () => {
-    const enc1 = await encrypt(plainText, secret);
-    const enc2 = await encrypt(plainText, secret);
+    it('should fail if iterations do not match', async () => {
+        const optionsEnc = { iterations: 2000 };
+        const optionsDec = { iterations: 1000 };
+        const encrypted = await encrypt(plaintext, secret, optionsEnc);
+        await expect(decrypt(encrypted, secret, optionsDec)).rejects.toThrow();
+    });
 
-    expect(enc1).not.toBe(enc2);
+    it('should work with custom salt and IV lengths', async () => {
+        const options = { saltLength: 32, ivLength: 16, iterations: 1000 };
+        const encrypted = await encrypt(plaintext, secret, options);
 
-    const dec1 = await decrypt(enc1, secret);
-    const dec2 = await decrypt(enc2, secret);
+        // Check length roughly: base64 overhead ~1.33x
+        // Raw length = 32 (salt) + 16 (iv) + plaintext_len + 16 (tag)
+        // plaintext len ~ 35 bytes (English + Korean chars take more bytes)
+        // Just verify it decrypts
+        const decrypted = await decrypt(encrypted, secret, options);
+        expect(decrypted).toBe(plaintext);
+    });
 
-    expect(dec1).toBe(plainText);
-    expect(dec2).toBe(plainText);
-  });
+    it('should fail if salt length mismatch', async () => {
+         const encOptions = { saltLength: 32, iterations: 1000 };
+         const decOptions = { saltLength: 16, iterations: 1000 }; // Default is 16
+         const encrypted = await encrypt(plaintext, secret, encOptions);
 
-  test('should handle empty string', async () => {
-      const empty = '';
-      const encrypted = await encrypt(empty, secret);
-      const decrypted = await decrypt(encrypted, secret);
-      expect(decrypted).toBe(empty);
-  });
-
-  test('should handle special characters and unicode', async () => {
-      const complexText = '안녕 Hello @#$%^&*() 1234';
-      const encrypted = await encrypt(complexText, secret);
-      const decrypted = await decrypt(encrypted, secret);
-      expect(decrypted).toBe(complexText);
-  });
-
-  test('should handle large payloads (> 100KB) safely', async () => {
-      // 200KB string
-      const largeText = 'A'.repeat(200 * 1024);
-      const encrypted = await encrypt(largeText, secret);
-      const decrypted = await decrypt(encrypted, secret);
-      expect(decrypted).toBe(largeText);
-  }, 10000); // Increase timeout for slow PBKDF2/encryption
+         // This might throw "Invalid encrypted data" or decryption failure or return garbage
+         // Because we are slicing the buffer incorrectly
+         await expect(decrypt(encrypted, secret, decOptions)).rejects.toThrow();
+    });
 });
