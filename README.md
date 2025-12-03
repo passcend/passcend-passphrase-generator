@@ -214,28 +214,38 @@ Node.js 또는 브라우저 애플리케이션에서 직접 가져와 사용할 
 ### 패스프레이즈 생성
 
 ```typescript
-import { PasswordGenerator } from '@passcend/passgen';
+import { generatePassphrase } from '@passcend/passgen';
 
 // 기본 생성
-const phrase = PasswordGenerator.generatePassphrase();
-// 결과: "Correct-Horse-Battery-Staple5"
+const phrase = generatePassphrase();
+```
 
+**Output (String):**
+```json
+"Correct-Horse-Battery-Staple5"
+```
+
+```typescript
 // 고급 옵션 (한국어 + QWERTY 변환)
-const customPhrase = PasswordGenerator.generatePassphrase({
+const customPhrase = generatePassphrase({
   language: 'ko',
   qwertyConvert: true,
   numWords: 5,
   leet: true
 });
-// 결과: "rkdskdzhd-dkqjwl..." (예시)
+```
+
+**Output (String):**
+```json
+"rkdskdzhd-dkqjwl-thskan-qkek5"
 ```
 
 ### 비밀번호 생성
 
 ```typescript
-import { PasswordGenerator } from '@passcend/passgen';
+import { generatePassword } from '@passcend/passgen';
 
-const password = PasswordGenerator.generatePassword({
+const password = generatePassword({
   length: 24,
   uppercase: true,
   numbers: true,
@@ -243,24 +253,60 @@ const password = PasswordGenerator.generatePassword({
 });
 ```
 
+**Output (String):**
+```json
+"x7K9vM2pQ5nL8jR4wZ1yA3bC"
+```
+
 ### PIN 생성
 
 ```typescript
-import { PasswordGenerator } from '@passcend/passgen';
+import { generatePin } from '@passcend/passgen';
 
 // 안전한 PIN (연속/반복 숫자 자동 거부)
-const safePin = PasswordGenerator.generatePin({ length: 6 });
+const safePin = generatePin({ length: 6 });
+```
+
+**Output (String):**
+```json
+"829104"
 ```
 
 ### 비밀번호 강도 측정
 
 ```typescript
-import { PasswordGenerator } from '@passcend/passgen';
+import { calculateStrength } from '@passcend/passgen';
 
-const result = PasswordGenerator.calculateStrength("password123");
-console.log(`점수: ${result.score}/4, 엔트로피: ${result.entropy} bits`);
-// 경고 메시지 확인
-console.log(result.warnings);
+const result = calculateStrength("Tr0ub4dor&3");
+```
+
+**Output (JSON Object):**
+```json
+{
+  "score": 3,
+  "label": "Strong",
+  "color": "lime",
+  "entropy": 85,
+  "warnings": []
+}
+```
+
+### 비밀번호 정책 검증
+
+```typescript
+import { validatePassword } from '@passcend/passgen';
+
+const result = validatePassword("pass", { minLength: 8 });
+```
+
+**Output (JSON Object):**
+```json
+{
+  "isValid": false,
+  "errors": [
+    "Password must be at least 8 characters long."
+  ]
+}
 ```
 
 ### 데이터 암호화 (AES-GCM)
@@ -274,12 +320,15 @@ async function secureData() {
 
   // 암호화
   const encrypted = await encrypt(data, secretKey);
-  console.log('Encrypted:', encrypted);
 
   // 복호화
   const original = await decrypt(encrypted, secretKey);
-  console.log('Decrypted:', original);
 }
+```
+
+**Output (String - Encrypted):**
+```text
+"7f8d... (Base64 Encoded Salt + IV + Ciphertext)"
 ```
 
 ---
