@@ -15,6 +15,7 @@ Node.js 및 브라우저를 위한 안전하고 유연하며 종속성이 없는
     *   Leet Speak (1337) 지원
     *   한글 -> 영문 QWERTY 키보드 입력 변환
 *   **강도 측정기 (Strength Meter)**: 내장된 비밀번호 강도 추정 기능 (0-4점).
+    *   **엔트로피 계산 (Entropy Calculation)**: 비밀번호의 정보 엔트로피를 비트(bit) 단위로 계산하여 정밀한 강도를 보여줍니다.
     *   **키보드 패턴 감지**: 'qwerty', 'asdf' 등 키보드 상에서 인접한 키의 패턴을 감지하여 경고를 제공합니다.
 *   **AES-GCM 암호화**: PBKDF2 키 유도(기본 600,000회 반복)를 사용하는 안전한 텍스트 암호화 및 복호화 기능을 제공합니다.
 *   **무의존성 (Zero Dependencies)**: 외부 런타임 종속성이 없습니다.
@@ -96,8 +97,11 @@ passgen [command] [options]
 ### CLI 예제 (Examples)
 
 ```bash
-# 기본 비밀번호 생성
+# 기본 비밀번호 생성 (강도 및 엔트로피 정보 표시)
 passgen password
+# 출력 예:
+# Password: TqR7+pxnr56;
+# Strength: Strong (78 bits)
 
 # 20자 길이의 비밀번호 생성, 특수문자 제외
 passgen password -l 20 --no-special
@@ -200,7 +204,7 @@ console.log(strength);
   score: 0,
   label: 'Very Weak',
   color: 'red',
-  entropy: ...,
+  entropy: 26,
   warnings: [
     'Numbers only',
     'Common pattern detected',

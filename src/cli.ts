@@ -202,13 +202,34 @@ async function run() {
                 printHelp();
                 break;
             case 'password':
-                console.log(generatePassword(options));
+                const pwd = generatePassword(options);
+                if (process.stdout.isTTY) {
+                    const strength = calculateStrength(pwd);
+                    console.log(`Password: ${pwd}`);
+                    console.log(`Strength: ${strength.label} (${strength.entropy} bits)`);
+                } else {
+                    console.log(pwd);
+                }
                 break;
             case 'passphrase':
-                console.log(generatePassphrase(options));
+                const phrase = generatePassphrase(options);
+                if (process.stdout.isTTY) {
+                    const strength = calculateStrength(phrase);
+                    console.log(`Passphrase: ${phrase}`);
+                    console.log(`Strength:   ${strength.label} (${strength.entropy} bits)`);
+                } else {
+                    console.log(phrase);
+                }
                 break;
             case 'pin':
-                console.log(generatePin(options));
+                const pin = generatePin(options);
+                if (process.stdout.isTTY) {
+                    const strength = calculateStrength(pin);
+                    console.log(`PIN:      ${pin}`);
+                    console.log(`Strength: ${strength.label} (${strength.entropy} bits)`);
+                } else {
+                    console.log(pin);
+                }
                 break;
             case 'strength':
                 if (!input) {

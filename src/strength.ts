@@ -21,7 +21,9 @@ export function calculateEntropy(password: string): number {
     if (/[a-z]/.test(password)) poolSize += 26;
     if (/[A-Z]/.test(password)) poolSize += 26;
     if (/[0-9]/.test(password)) poolSize += 10;
-    if (/[^a-zA-Z0-9]/.test(password)) poolSize += 32; // Rough estimate of special chars
+    if (/[\uAC00-\uD7AF]/.test(password)) poolSize += 11172; // Hangul Syllables
+    // Special chars: anything that is NOT a-z, A-Z, 0-9, or Hangul
+    if (/[^a-zA-Z0-9\uAC00-\uD7AF]/.test(password)) poolSize += 32;
 
     if (poolSize === 0) return 0;
 
@@ -53,9 +55,11 @@ export function calculateStrength(password: string): PasswordStrength {
     const hasLower = /[a-z]/.test(password);
     const hasUpper = /[A-Z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
-    const hasSpecial = /[^a-zA-Z0-9]/.test(password);
+    const hasHangul = /[\uAC00-\uD7AF]/.test(password);
+    const hasSpecial = /[^a-zA-Z0-9\uAC00-\uD7AF]/.test(password);
 
-    const varietyCount = [hasLower, hasUpper, hasNumber, hasSpecial].filter(Boolean).length;
+    // Hangul counts as a variety type, essentially "Other Letters" but high entropy
+    const varietyCount = [hasLower, hasUpper, hasNumber, hasSpecial, hasHangul].filter(Boolean).length;
     if (varietyCount >= 2) score++;
     if (varietyCount >= 3) score++;
     if (varietyCount >= 4) score++;

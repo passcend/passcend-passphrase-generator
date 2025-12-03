@@ -55,4 +55,29 @@ describe('Strength Calculator', () => {
         // And keyboard pattern.
         expect(result.warnings).toContain("Keyboard pattern detected (e.g. adjacent keys like 'qwerty' or 'asdf')");
     });
+
+    test('calculates entropy for Hangul properly', () => {
+        // '안녕하세요' length 5.
+        // Pool: 11172 + 32 (special) = 11204.
+        // log2(11204) ~ 13.45.
+        // 5 * 13.45 = 67.25.
+        const entropy = calculateEntropy('안녕하세요');
+        expect(entropy).toBeGreaterThan(60);
+        expect(entropy).toBeLessThan(70);
+    });
+
+    test('calculates strength for Hangul properly', () => {
+        const result = calculateStrength('안녕하세요');
+        // Entropy 67 -> score is neutral (not high enough for +1 which needs >80, not low enough for -1 which needs <40)
+        // Length 5 -> score 0
+        // Variety -> 1 (Hangul only). But my update sets hasSpecial=true for Hangul too?
+        // Let's check logic:
+        // hasHangul = true.
+        // hasSpecial: `/[^a-zA-Z0-9\uAC00-\uD7AF]/.test` -> false for pure Hangul.
+        // Variety count = 1 (Hangul).
+        // Score = 0.
+        // Label = Very Weak.
+        // This is correct for length 5.
+        expect(result.entropy).toBe(67);
+    });
 });
