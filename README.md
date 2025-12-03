@@ -60,59 +60,150 @@ npm install -g @passcend/passgen
 passgen [command] [options]
 ```
 
-### 주요 명령어 (Commands)
+---
 
-| 명령어 | 설명 | 예시 |
-| :--- | :--- | :--- |
-| `password` | 임의의 비밀번호 생성 (기본값) | `passgen password` |
-| `passphrase` | 기억하기 쉬운 패스프레이즈 생성 | `passgen passphrase` |
-| `pin` | 보안 PIN 번호 생성 | `passgen pin` |
-| `strength` | 비밀번호 강도 및 엔트로피 측정 | `passgen strength "mypassword"` |
-| `encrypt` | 텍스트 암호화 (AES-GCM) | `passgen encrypt "secret text" --secret "key"` |
-| `decrypt` | 텍스트 복호화 (AES-GCM) | `passgen decrypt "encrypted_text" --secret "key"` |
+### 1. 비밀번호 (Password)
 
-### 옵션 상세 (Detailed Options)
+무작위 문자열로 구성된 비밀번호를 생성합니다. 별도의 명령어가 없으면 기본적으로 이 모드로 실행됩니다.
 
-#### 1. 패스프레이즈 (Passphrase)
-기억하기 쉬운 단어 조합을 생성합니다.
+**옵션 (Options):**
 
-*   `--lang, -l <code>`: 언어 선택 (`en`: 영어, `ko`: 한국어)
-*   `--words, -w <n>`: 단어 수 (기본: 4)
-*   `--sep, -s <char>`: 구분자 (기본: `-`)
-*   `--qwerty`: **(한국어 전용)** 한글 단어를 QWERTY 영문 키 입력으로 변환
-*   `--leet`: Leet speak 적용 (예: `E` -> `3`)
-*   `--transform <type>`: 대소문자 변환 (`uppercase`, `lowercase`, `titlecase`)
-*   `--no-caps`: 첫 글자 대문자화 끄기
-*   `--no-number`: 숫자 포함 끄기
+| 옵션 (Option) | 단축키 (Alias) | 타입 (Type) | 필수 (Required) | 기본값 (Default) | 설명 (Description) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `--length` | `-l` | Number | 선택 (Optional) | `16` | 생성할 비밀번호의 길이 |
+| `--no-upper` | - | Boolean | 선택 (Optional) | `false` | 대문자를 제외합니다. |
+| `--no-lower` | - | Boolean | 선택 (Optional) | `false` | 소문자를 제외합니다. |
+| `--no-numbers` | - | Boolean | 선택 (Optional) | `false` | 숫자를 제외합니다. |
+| `--no-special` | - | Boolean | 선택 (Optional) | `false` | 특수문자를 제외합니다. |
+| `--ambiguous` | `-a` | Boolean | 선택 (Optional) | `false` | 헷갈리는 문자(`l`, `1`, `I`, `0`, `O`)를 포함합니다. (기본적으로는 제외됨) |
+
+**사용 예시 (Example):**
+
+```bash
+npx @passcend/passgen password -l 20 --no-special
+```
+
+**출력 (Output):**
+
+```text
+Password: mK9xP2jL5vN8qR4wZ1yA
+Strength: Very Strong (115 bits)
+```
+
+---
+
+### 2. 패스프레이즈 (Passphrase)
+
+기억하기 쉬운 단어들을 조합하여 패스프레이즈를 생성합니다.
+
+**옵션 (Options):**
+
+| 옵션 (Option) | 단축키 (Alias) | 타입 (Type) | 필수 (Required) | 기본값 (Default) | 설명 (Description) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `--lang` | - | String | 선택 (Optional) | `en` | 언어 코드 (`en`: 영어, `ko`: 한국어) |
+| `--words` | `-w` | Number | 선택 (Optional) | `4` | 단어의 개수 |
+| `--sep` | `-s` | String | 선택 (Optional) | `-` | 단어 사이의 구분자 |
+| `--no-caps` | - | Boolean | 선택 (Optional) | `false` | 단어의 첫 글자를 대문자로 만들지 않습니다. |
+| `--no-number` | - | Boolean | 선택 (Optional) | `false` | 패스프레이즈 끝에 숫자를 붙이지 않습니다. |
+| `--qwerty` | - | Boolean | 선택 (Optional) | `false` | **(한국어 전용)** 한글 단어를 영문 QWERTY 키보드 입력값으로 변환합니다. |
+| `--transform` | - | String | 선택 (Optional) | - | 전체 텍스트 변환 (`uppercase`, `lowercase`, `titlecase`) |
+| `--leet` | - | Boolean | 선택 (Optional) | `false` | Leet speak(해커어)를 적용합니다. (예: `E` -> `3`) |
+
+**사용 예시 (Example):**
 
 ```bash
 # 한국어 단어를 QWERTY 영문으로 변환하여 생성
 npx @passcend/passgen passphrase --lang ko --qwerty
-# 출력 예: rkdskdzhd-dkqjwl-thskan-qkek
 ```
 
-#### 2. 비밀번호 (Password)
-무작위 문자열을 생성합니다.
+**출력 (Output):**
 
-*   `--length, -l <n>`: 길이 (기본: 16)
-*   `--no-special`: 특수문자 제외
-*   `--no-numbers`: 숫자 제외
-*   `--ambiguous, -a`: 헷갈리는 문자(l, 1, O, 0 등) 포함
+```text
+Passphrase: rkdskdzhd-dkqjwl-thskan-qkek5
+Strength:   Very Strong (140 bits)
+```
 
-#### 3. PIN 번호
-금융/보안용 숫자 비밀번호를 생성합니다.
+---
 
-*   `--length, -l <n>`: 길이 (기본: 4)
-*   `--allow-seq`: 연속된 숫자 허용 (예: 1234, 기본값: 금지됨)
-*   `--allow-repeat`: 반복된 숫자 허용 (예: 0000, 기본값: 금지됨)
+### 3. PIN 번호 (PIN)
 
-#### 4. 암호화/복호화 (Encryption)
-AES-GCM 알고리즘을 사용하여 텍스트를 안전하게 보호합니다.
+금융 및 보안 장치에 사용되는 숫자 비밀번호를 생성합니다.
 
-*   `--secret <key>`: (필수) 암호화/복호화 키
-*   `--iterations <n>`: PBKDF2 반복 횟수 (기본: 600,000)
-*   `--salt-len <n>`: Salt 길이 (기본: 16 bytes)
-*   `--iv-len <n>`: IV 길이 (기본: 12 bytes)
+**옵션 (Options):**
+
+| 옵션 (Option) | 단축키 (Alias) | 타입 (Type) | 필수 (Required) | 기본값 (Default) | 설명 (Description) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `--length` | `-l` | Number | 선택 (Optional) | `4` | PIN 길이 |
+| `--allow-seq` | - | Boolean | 선택 (Optional) | `false` | 연속된 숫자(예: 1234)를 허용합니다. (기본: 차단) |
+| `--allow-repeat`| - | Boolean | 선택 (Optional) | `false` | 반복된 숫자(예: 1111)를 허용합니다. (기본: 차단) |
+
+**사용 예시 (Example):**
+
+```bash
+npx @passcend/passgen pin -l 6
+```
+
+**출력 (Output):**
+
+```text
+PIN:      829104
+Strength: Weak (20 bits)
+```
+
+---
+
+### 4. 암호화 / 복호화 (Encryption / Decryption)
+
+AES-GCM 알고리즘과 PBKDF2(SHA-256) 키 유도를 사용하여 텍스트를 안전하게 보호합니다.
+
+**옵션 (Options):**
+
+| 옵션 (Option) | 단축키 (Alias) | 타입 (Type) | 필수 (Required) | 기본값 (Default) | 설명 (Description) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `--secret` | - | String | **필수 (Required)**| - | 암호화/복호화에 사용할 비밀 키 |
+| `--iterations` | - | Number | 선택 (Optional) | `600000` | PBKDF2 반복 횟수 (보안 강도 조절) |
+| `--salt-len` | - | Number | 선택 (Optional) | `16` | Salt 길이 (bytes) |
+| `--iv-len` | - | Number | 선택 (Optional) | `12` | IV 길이 (bytes) |
+
+**사용 예시 (Example):**
+
+```bash
+# 암호화
+npx @passcend/passgen encrypt "My Secret Data" --secret "password123"
+
+# 복호화
+npx @passcend/passgen decrypt "encrypted_string_here..." --secret "password123"
+```
+
+**출력 (Output):**
+
+```text
+# 암호화 결과
+Saltbase64...IVbase64...CiphertextBase64...
+
+# 복호화 결과
+My Secret Data
+```
+
+---
+
+### 5. 강도 측정 (Strength)
+
+비밀번호의 엔트로피와 패턴을 분석하여 강도를 측정합니다.
+
+**사용 예시 (Example):**
+
+```bash
+npx @passcend/passgen strength "password123"
+```
+
+**출력 (Output):**
+
+```text
+Password: password123
+Strength: Very Weak (Score: 1/4)
+Entropy:  28 bits
+```
 
 ---
 
